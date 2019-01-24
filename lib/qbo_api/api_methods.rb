@@ -66,6 +66,18 @@ class QboApi
       payload = set_deactivate(entity, id)
       request(:post, entity: entity, path: entity_path(entity), payload: payload)
     end
+    
+    def get_invoice_pdf(invoice_id)
+      headers = { 'Content-Type' => 'application/pdf', 'Accept' => 'application/pdf' }
+      connection = build_connection(@endpoint_url, headers: headers) do |conn|
+        add_exception_middleware(conn)
+        add_authorization_middleware(conn)
+        add_connection_adapter(conn)
+      end
+      path = "#{entity_path(:invoice)}/#{invoice_id}/pdf"
+      raw_response = raw_request(:get, conn: connection, path: path)
+      raw_response.body
+    end
 
     private
 
